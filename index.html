@@ -118,47 +118,45 @@
     let characterConfirmed = false;
 
     const allCharacters = [
-      {name: "Попугай", image: "https://i.pinimg.com/736x/b9/5b/d9/b95bd91a2543a66def2abf5fc240bfee.jpg"},
-      {name: "Свинья", image: "https://avatars.mds.yandex.net/i?id=fea2eda3efc5bb2b86d8e45a5e7e55cd_l-9111606-images-thumbs&n=13"},
-      {name: "Кролик", image: "https://i.pinimg.com/736x/46/c7/d5/46c7d5c128dcd8f0f8e28fd37ceb83e3.jpg"},
-      {name: "Снежный голем", image: "https://i.pinimg.com/736x/9b/e4/e4/9be4e48a0910fcc29d5221e6745f85f7.jpg"},
-      {name: "Спрут", image: "https://i.pinimg.com/736x/e0/ec/a3/e0eca3fa371cca1414c7323ae5db4c50.jpg"},
-      {name: "Черепаха", image: "https://avatars.mds.yandex.net/i?id=5df06cea369e731da517e0d2e2e6be41f1e920e6-3920022-images-thumbs&n=13"},
-      {name: "Деревенский житель", image: "https://avatars.mds.yandex.net/i?id=24eb784e15cdb34823a95f7ba9c30f62_l-5344276-images-thumbs&n=13"},
-      {name: "Странствующий торговец", image: "https://i.ytimg.com/vi/guSZ2ZPhgvQ/maxresdefault.jpg"},
-      {name: "Лягушка", image: "https://avatars.mds.yandex.net/i?id=c9a6463d35564ebfd55a7aaed028180a5ffed40c-5420588-images-thumbs&n=13"},
-      {name: "Тихоня", image: "https://avatars.mds.yandex.net/i?id=03b43d8b1e10a4bffd3a5746da164654394a8411-12527616-images-thumbs&n=13"},
-      {name: "Верблюд", image: "https://avatars.mds.yandex.net/i?id=d1b42df6622b23c1049ee2e5733f8a92_l-12319474-images-thumbs&n=13"},
-      {name: "Броненосец", image: "https://img2.wtftime.ru/store/2023/12/20/v2RvO8AZ_big_poster_ds.jpg"},
-      {name: "Пчела", image: "https://i2.wp.com/art.pixilart.com/e2e8c97c55ab35d.png"},
-      {name: "Пещерный паук", image: "https://avatars.dzeninfra.ru/get-zen_doc/10894199/pub_64ccc85580ac945fa117e3c0_64ccc945db1e5b3202eec2e4/scale_1200"},
-      {name: "Дельфин", image: "https://avatars.mds.yandex.net/i?id=97bb02c12827a0efb5559f426a7c2e45_l-4522636-images-thumbs&n=13"},
-      {name: "Странник края", image: "https://avatars.dzeninfra.ru/get-zen_doc/2993437/pub_60a5011dd0a43902b198d226_60a501b68e956749a27be773/scale_1200"},
-      {name: "Железный голем", image: "https://mcpehub.org/uploads/posts/2021-10/1634638186_tameable-and-smart-iron-golems-1.jpg"},
-      {name: "Лама", image: "https://avatars.mds.yandex.net/i?id=7fb9a44e37df447ad8dfe191b0424ae3c9935f95-6451675-images-thumbs&n=13"},
-      {name: "Панда", image: "https://steamuserimages-a.akamaihd.net/ugc/1477696684658929345/6C55E2B67E511EA8601E74F45F33DF8E74CE5359/?imw=512&amp;imh=477&amp;ima=fit&amp;impolicy=Letterbox&amp;imcolor=%23000000&amp;letterbox=true"},
-      {name: "Пиглин", image: "https://yt3.googleusercontent.com/J3aFKx66bw9ydLbTG7cparEhDq1kDN5fJ6Mk90RQbdhNo-EZHqOPVSJdjS87VWunxJefrDZZ=s900-c-k-c0x00ffffff-no-rj"},
-      {name: "Ифрит", image: "https://i.pinimg.com/736x/ac/7b/4a/ac7b4a984357c88dc4ea50a4a15ec21f.jpg"},
-      {name: "Крипер", image: "https://avatars.mds.yandex.net/i?id=33e8c6d16c9fdbc6c2d107461d68f2f2_l-7000229-images-thumbs&n=13"},
-      {name: "Утопленник", image: "https://avatars.dzeninfra.ru/get-zen_doc/271828/pub_65147913b503eb6059203ef2_6518397251b4a948e59055a8/scale_1200"},
-      {name: "Страж", image: "https://i.pinimg.com/736x/58/d4/33/58d433e3a2d124549b52a6a37d79df5f.jpg"},
-      {name: "Чешуйница", image: "https://avatars.mds.yandex.net/i?id=312e283ac5865e51d05c038c71f60e9f_l-5248122-images-thumbs&n=13"},
-      {name: "Гаст", image: "https://i.pinimg.com/originals/22/39/1c/22391c8d4e9287707284df1782c01731.jpg"},
-      {name: "Зомби", image: "https://i.ytimg.com/vi/aIrQOi7N25w/maxresdefault.jpg"},
-      {name: "Фантом", image: "https://i.ytimg.com/vi/IsE3j5lpujU/maxresdefault.jpg"},
-      {name: "Шалкер", image: "https://i.pinimg.com/originals/58/ed/4e/58ed4e8ecf96ede7247a7a8d0c3345b1.jpg"},
-      {name: "Скелет", image: "https://i.pinimg.com/736x/11/1b/db/111bdbca704c24de277f357227793239.jpg"},
-      {name: "Ведьма", image: "https://i.pinimg.com/736x/b5/4b/dc/b54bdcb3c4c1e802e2e881a63edb62e5.jpg"},
-      {name: "Дракон", image: "https://avatars.mds.yandex.net/i?id=9f43a6efe041d4920baada890bff753c9a05d7cd-6424941-images-thumbs&n=13"},
-      {name: "Магмовый куб", image: "https://fanfics.me/images/fandoms_heroes/15900-1731444954.jpg"},
-      {name: "Разоритель", image: "https://fanfics.me/images/fandoms_heroes/219-1731443077.jpg"},
-      {name: "Страйдер", image: "https://fanfics.me/images/fandoms_heroes/219-1731428108.jpg"},
-      {name: "Хоглин", image: "https://fanfics.me/images/fandoms_heroes/219-1731439043.jpg"},
-      {name: "Хранитель", image: "https://fanfics.me/images/fandoms_heroes/219-1731443845.jpg"},
-      {name: "Иссушитель", image: "https://images.genius.com/4e4fa6d7b51b4b3c48dde9b1ee1ec229.1000x1000x1.png"},
-      {name: "Разбойник", image: "https://fanfics.me/images/fandoms_heroes/219-1731438850.jpg"},
-      {name: "Кот", image: "https://i.pinimg.com/736x/55/f3/92/55f392d86b492856af12360c9ba2ad5b.jpg"},
-      {name: "Собака", image: "https://avatars.mds.yandex.net/i?id=dcd9a3a96062bc9067ddffaa163e0a0c_l-10471591-images-thumbs&n=13"}
+      {name: "Кошка", image: "https://static.tildacdn.com/tild3163-3066-4534-b633-323361313535/image.png"},
+      {name: "Собака", image: "https://i.pinimg.com/736x/a1/02/d5/a102d5a0d2bbe4d9f5f610758d1f631b.jpg"},
+      {name: "Корова", image: "https://i.pinimg.com/736x/3e/12/59/3e1259237f19051d0aafe659a458c2be.jpg"},
+      {name: "Лошадь", image: "https://i.pinimg.com/736x/0f/aa/4e/0faa4ee6fac401815aca144265dbccba.jpg"},
+      {name: "Курица", image: "https://cdn1.youla.io/files/images/780_780/65/3b/653b76f6c5d2b88e6b042400-2.jpg"},
+      {name: "Утка", image: "https://i.pinimg.com/originals/58/ea/24/58ea247ebc747f28797809654efbc5d0.jpg"},
+      {name: "Свинья", image: "https://i.pinimg.com/736x/58/18/24/5818245f5aa915bf1b0b1f4a2766f73b.jpg"},
+      {name: "Овца", image: "https://cdn0.youla.io/files/images/780_780/63/63/6363375c29c3611d16468e87-1.jpg"},
+      {name: "Коза", image: "https://proza.ru/pics/2019/12/09/1204.jpg"},
+      {name: "Кролик", image: "https://i.pinimg.com/736x/7a/dd/21/7add219f48031c4359b7c41b73c28c62.jpg"},
+      {name: "Медведь", image: "https://i.pinimg.com/originals/a2/67/a9/a267a93a1ddbebc055f0b8c4229a579f.jpg"},
+      {name: "Волк", image: "https://avatars.mds.yandex.net/get-yapic/64336/JdjZojamvNvMzerlh5Z6lcWyRBA-1/orig"},
+      {name: "Лиса", image: "https://avatars.mds.yandex.net/i?id=d16d639458acd0d6df3f052a15172b6d_l-4079534-images-thumbs&n=13"},
+      {name: "Ёжик", image: "https://i.pinimg.com/originals/34/a5/31/34a53193cefc8e35d826131fef25daf0.jpg"},
+      {name: "Белка", image: "https://imgbb.ru/user_upload/2025-05-19/1747661752_d6113847e63e1620e35d54df14d12f57.jpg"},
+      {name: "Олень", image: "https://i.pinimg.com/originals/e9/fe/fb/e9fefb7f04bba844e762125212ca4044.jpg"},
+      {name: "Зайчик", image: "https://static.mk.ru/upload/entities/2022/01/10/07/articles/facebookPicture/b0/fe/3e/7b/97e3a980f91df48acfa09b56ef0d88b6.jpg"},
+      {name: "Енот", image: "https://i.pinimg.com/736x/6f/fd/5c/6ffd5c8535d96ae7e39f466e82882bbd.jpg"},
+      {name: "Лев", image: "https://i.pinimg.com/474x/09/6a/fb/096afb7916d26d09c7cfe235c2459287.jpg"},
+      {name: "Тигр", image: "https://live.staticflickr.com/384/19707895620_3ba353eeeb_c.jpg"},
+      {name: "Леопард", image: "https://avatars.mds.yandex.net/get-mpic/11535894/2a0000018c290baf4eae8ac63cc26b89628a/orig"},
+      {name: "Слон", image: "https://storage.yandexcloud.net/regions/posts/media/thumbnails/2024/08/large/Se2FivsjQ4JLm8DNEB79eyR8epwGTHGmXWSAWyp1.jpg"},
+      {name: "Жираф", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c7/Rothschild%27s_Giraffe_%28Giraffa_camelopardalis_rothschildi%29_male_%287068054987%29%2C_crop_%26_edit.jpg/960px-Rothschild%27s_Giraffe_%28Giraffa_camelopardalis_rothschildi%29_male_%287068054987%29%2C_crop_%26_edit.jpg"},
+      {name: "Зебра", image: "https://i.pinimg.com/474x/07/31/1b/07311b381fba3aef648712259b941c86.jpg"},
+      {name: "Обезьяна", image: "https://i.pinimg.com/originals/00/62/04/006204ca1ba25fe2ebb5703d07ddd7c0.jpg"},
+      {name: "Панда", image: "https://i.pinimg.com/474x/c0/9e/99/c09e993e14a48d43cdd871d34d7c5338.jpg"},
+      {name: "Кенгуру", image: "https://static.life.ru/publications/2025/2/6/1214741553084.3555.webp"},
+      {name: "Пингвин", image: "https://i.pinimg.com/originals/31/fa/60/31fa60404a33fc97f178799c13374ea6.jpg"},
+      {name: "Черепаха", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/aa/Testudo_horsfieldii%3B_Baikonur_001.jpg/960px-Testudo_horsfieldii%3B_Baikonur_001.jpg"},
+      {name: "Дельфин", image: "https://avatars.mds.yandex.net/i?id=5bfe8b1e865609163a2d17fa6e27b61e_l-4090014-images-thumbs&n=13"},
+      {name: "Кит", image: "https://i.pinimg.com/736x/10/bf/8a/10bf8ad00eea2d8a73fb8208ca66893b.jpg"},
+      {name: "Крокодил", image: "https://static4.smi2.net/img/1200x630/11951706.jpeg"},
+      {name: "Морж", image: "https://upload.wikimedia.org/wikipedia/commons/2/22/Pacific_Walrus_-_Bull_%288247646168%29.jpg"},
+      {name: "Тюлень", image: "https://avatars.mds.yandex.net/i?id=878ecc2e4485552a8b433e51c05911bc_l-4539108-images-thumbs&n=13"},
+      {name: "Орёл", image: "https://avatars.mds.yandex.net/i?id=ea7f7bab1f2db10f3e4879909413602d_l-16449870-images-thumbs&n=13"},
+      {name: "Сова", image: "https://avatars.mds.yandex.net/get-yapic/60687/FiqyLN0OGcK3NCc5rrDN1MyPl8-1/orig"},
+      {name: "Попугай", image: "https://aibolit66.ru/images/lechenie_popugaya.jpg"},
+      {name: "Шиншилла", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/Chinchilla-Patchouli.jpg/960px-Chinchilla-Patchouli.jpg"},
+      {name: "Дикобраз", image: "https://avatars.mds.yandex.net/i?id=7aabed2e83b549b7c6d8c4a7fee0ea64_l-5337299-images-thumbs&n=13"}
     ];
 
 
@@ -181,7 +179,7 @@
 
         document.getElementById("characterSection").classList.add("hidden");
         document.getElementById("selectButton").classList.add("hidden");
-        
+
         document.getElementById("selectMessage").classList.add("hidden");
 
         document.getElementById("chosenCharacter").innerText = "Вы выбрали: " + selectedCharacter;
@@ -191,7 +189,7 @@
       }
     }
 
-   
+
     function renderCharacters(characters, containerId) {
       const container = document.getElementById(containerId);
       container.innerHTML = characters.map(character => `
@@ -238,14 +236,14 @@
 </head>
 
 <body>
-  <h1>Отгадай персонажа</h1>
-  <p id="selectMessage">Выберите персонажа:</p>
+  <h1>Отгадай животное</h1>
+  <p id="selectMessage">Выберите животное:</p>
   <div class="card-container" id="characterSection"></div>
 
   <p id="chosenCharacter"></p>
   <div class="button-container">
-    <button id="selectButton" onclick="selectCharacter()">Подтвердить выбор персонажа</button>
- 
+    <button id="selectButton" onclick="selectCharacter()">Подтвердить выбор</button>
+
     <p id="notification" style="font-size: 1.2em; color: green;"></p>
   </div>
   <div class="card-container" id="allCharacters"></div>
