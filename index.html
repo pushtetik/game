@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Game</title>
+  <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1.5.1/dist/sockjs.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
+  <style>
+    .card-container {
+      display: ruby;
+      gap: 20px;
+      margin-top: 20px;
+      justify-content: flex-start;
+      flex-wrap: nowrap;
+      overflow-x: auto;
+    }
+
+    .card {
+      width: 150px;
+      height: 240px;
+      perspective: 1000px;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+    }
+
+    .card-inner {
+      position: relative;
+      width: 100%;
+      height: 200px;
+      transform-style: preserve-3d;
+      transition: transform 0.5s;
+    }
+
+    .card-front,
+    .card-back {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      backface-visibility: hidden;
+    }
+
+    .card-front {
+      background-color: #f2f2f2;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    .card-back {
+      background-color: #8c8c8c;
+      color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border-radius: 10px;
+      transform: rotateY(180deg);
+    }
+
+    .card.selected .card-inner {
+      transform: rotateY(180deg);
+    }
+
+    .card-front img {
+      max-width: 100px;
+      max-height: 100px;
+    }
+
+    .card-name {
+      margin-top: 10px;
+      font-size: 14px;
+      font-weight: bold;
+      text-align: center;
+      color: #333;
+    }
+
+    #chosenCharacter {
+      font-weight: bold;
+      margin-top: 20px;
+    }
+
+    #characterSection.hidden,
+    #selectButton.hidden,
+    #sendWinButton.hidden,
+    #selectMessage.hidden {
+      display: none;
+    }
+
+    .button-container {
+      justify-content: center;
+      gap: 10px;
+    }
+
+    button {
+      padding: 10px 20px;
+      font-size: 14px;
+      background-color: #007BFF;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+  </style>
+  <script>
+    let stompClient = null;
+    let selectedCharacter = null;
+    const selectedCards = new Set();
+    let characterConfirmed = false;
+
+    const allCharacters = [
+      {name: "Попугай", image: "https://i.pinimg.com/736x/b9/5b/d9/b95bd91a2543a66def2abf5fc240bfee.jpg"},
+      {name: "Свинья", image: "https://avatars.mds.yandex.net/i?id=fea2eda3efc5bb2b86d8e45a5e7e55cd_l-9111606-images-thumbs&n=13"},
+      {name: "Кролик", image: "https://i.pinimg.com/736x/46/c7/d5/46c7d5c128dcd8f0f8e28fd37ceb83e3.jpg"},
+      {name: "Снежный голем", image: "https://i.pinimg.com/736x/9b/e4/e4/9be4e48a0910fcc29d5221e6745f85f7.jpg"},
+      {name: "Спрут", image: "https://i.pinimg.com/736x/e0/ec/a3/e0eca3fa371cca1414c7323ae5db4c50.jpg"},
+      {name: "Черепаха", image: "https://avatars.mds.yandex.net/i?id=5df06cea369e731da517e0d2e2e6be41f1e920e6-3920022-images-thumbs&n=13"},
+      {name: "Деревенский житель", image: "https://avatars.mds.yandex.net/i?id=24eb784e15cdb34823a95f7ba9c30f62_l-5344276-images-thumbs&n=13"},
+      {name: "Странствующий торговец", image: "https://i.ytimg.com/vi/guSZ2ZPhgvQ/maxresdefault.jpg"},
+      {name: "Лягушка", image: "https://avatars.mds.yandex.net/i?id=c9a6463d35564ebfd55a7aaed028180a5ffed40c-5420588-images-thumbs&n=13"},
+      {name: "Тихоня", image: "https://avatars.mds.yandex.net/i?id=03b43d8b1e10a4bffd3a5746da164654394a8411-12527616-images-thumbs&n=13"},
+      {name: "Верблюд", image: "https://avatars.mds.yandex.net/i?id=d1b42df6622b23c1049ee2e5733f8a92_l-12319474-images-thumbs&n=13"},
+      {name: "Броненосец", image: "https://img2.wtftime.ru/store/2023/12/20/v2RvO8AZ_big_poster_ds.jpg"},
+      {name: "Пчела", image: "https://i2.wp.com/art.pixilart.com/e2e8c97c55ab35d.png"},
+      {name: "Пещерный паук", image: "https://avatars.dzeninfra.ru/get-zen_doc/10894199/pub_64ccc85580ac945fa117e3c0_64ccc945db1e5b3202eec2e4/scale_1200"},
+      {name: "Дельфин", image: "https://avatars.mds.yandex.net/i?id=97bb02c12827a0efb5559f426a7c2e45_l-4522636-images-thumbs&n=13"},
+      {name: "Странник края", image: "https://avatars.dzeninfra.ru/get-zen_doc/2993437/pub_60a5011dd0a43902b198d226_60a501b68e956749a27be773/scale_1200"},
+      {name: "Железный голем", image: "https://mcpehub.org/uploads/posts/2021-10/1634638186_tameable-and-smart-iron-golems-1.jpg"},
+      {name: "Лама", image: "https://avatars.mds.yandex.net/i?id=7fb9a44e37df447ad8dfe191b0424ae3c9935f95-6451675-images-thumbs&n=13"},
+      {name: "Панда", image: "https://steamuserimages-a.akamaihd.net/ugc/1477696684658929345/6C55E2B67E511EA8601E74F45F33DF8E74CE5359/?imw=512&amp;imh=477&amp;ima=fit&amp;impolicy=Letterbox&amp;imcolor=%23000000&amp;letterbox=true"},
+      {name: "Пиглин", image: "https://yt3.googleusercontent.com/J3aFKx66bw9ydLbTG7cparEhDq1kDN5fJ6Mk90RQbdhNo-EZHqOPVSJdjS87VWunxJefrDZZ=s900-c-k-c0x00ffffff-no-rj"},
+      {name: "Ифрит", image: "https://i.pinimg.com/736x/ac/7b/4a/ac7b4a984357c88dc4ea50a4a15ec21f.jpg"},
+      {name: "Крипер", image: "https://avatars.mds.yandex.net/i?id=33e8c6d16c9fdbc6c2d107461d68f2f2_l-7000229-images-thumbs&n=13"},
+      {name: "Утопленник", image: "https://avatars.dzeninfra.ru/get-zen_doc/271828/pub_65147913b503eb6059203ef2_6518397251b4a948e59055a8/scale_1200"},
+      {name: "Страж", image: "https://i.pinimg.com/736x/58/d4/33/58d433e3a2d124549b52a6a37d79df5f.jpg"},
+      {name: "Чешуйница", image: "https://avatars.mds.yandex.net/i?id=312e283ac5865e51d05c038c71f60e9f_l-5248122-images-thumbs&n=13"},
+      {name: "Гаст", image: "https://i.pinimg.com/originals/22/39/1c/22391c8d4e9287707284df1782c01731.jpg"},
+      {name: "Зомби", image: "https://i.ytimg.com/vi/aIrQOi7N25w/maxresdefault.jpg"},
+      {name: "Фантом", image: "https://i.ytimg.com/vi/IsE3j5lpujU/maxresdefault.jpg"},
+      {name: "Шалкер", image: "https://i.pinimg.com/originals/58/ed/4e/58ed4e8ecf96ede7247a7a8d0c3345b1.jpg"},
+      {name: "Скелет", image: "https://i.pinimg.com/736x/11/1b/db/111bdbca704c24de277f357227793239.jpg"},
+      {name: "Ведьма", image: "https://i.pinimg.com/736x/b5/4b/dc/b54bdcb3c4c1e802e2e881a63edb62e5.jpg"},
+      {name: "Дракон", image: "https://avatars.mds.yandex.net/i?id=9f43a6efe041d4920baada890bff753c9a05d7cd-6424941-images-thumbs&n=13"},
+      {name: "Магмовый куб", image: "https://fanfics.me/images/fandoms_heroes/15900-1731444954.jpg"},
+      {name: "Разоритель", image: "https://fanfics.me/images/fandoms_heroes/219-1731443077.jpg"},
+      {name: "Страйдер", image: "https://fanfics.me/images/fandoms_heroes/219-1731428108.jpg"},
+      {name: "Хоглин", image: "https://fanfics.me/images/fandoms_heroes/219-1731439043.jpg"},
+      {name: "Хранитель", image: "https://fanfics.me/images/fandoms_heroes/219-1731443845.jpg"},
+      {name: "Иссушитель", image: "https://images.genius.com/4e4fa6d7b51b4b3c48dde9b1ee1ec229.1000x1000x1.png"},
+      {name: "Разбойник", image: "https://fanfics.me/images/fandoms_heroes/219-1731438850.jpg"},
+      {name: "Кот", image: "https://i.pinimg.com/736x/55/f3/92/55f392d86b492856af12360c9ba2ad5b.jpg"},
+      {name: "Собака", image: "https://avatars.mds.yandex.net/i?id=dcd9a3a96062bc9067ddffaa163e0a0c_l-10471591-images-thumbs&n=13"}
+    ];
+
+
+    function connect() {
+      const socket = new SockJS('/game');
+      stompClient = Stomp.over(socket);
+      stompClient.connect({}, function (frame) {
+        console.log('Connected: ' + frame);
+        stompClient.subscribe('/topic/win-notification', function (message) {
+          document.getElementById("notification").innerText = message.body;
+        });
+      });
+    }
+
+    function selectCharacter() {
+      const selectedCard = document.querySelector(".card.selected");
+      if (selectedCard) {
+        selectedCharacter = selectedCard.getAttribute("data-name");
+        characterConfirmed = true;
+
+        document.getElementById("characterSection").classList.add("hidden");
+        document.getElementById("selectButton").classList.add("hidden");
+        
+        document.getElementById("selectMessage").classList.add("hidden");
+
+        document.getElementById("chosenCharacter").innerText = "Вы выбрали: " + selectedCharacter;
+        renderCharacters(allCharacters, 'allCharacters');
+      } else {
+        alert("Пожалуйста, выберите персонажа!");
+      }
+    }
+
+   
+    function renderCharacters(characters, containerId) {
+      const container = document.getElementById(containerId);
+      container.innerHTML = characters.map(character => `
+                <div class="card" data-name="${character.name}">
+                    <div class="card-inner">
+                        <div class="card-front">
+                            <img src="${character.image}" alt="${character.name}">
+                        </div>
+                        <div class="card-back">${character.name}</div>
+                    </div>
+                    <div class="card-name">${character.name}</div>
+                </div>
+            `).join('');
+      addCardListeners();
+    }
+
+    function addCardListeners() {
+      const cards = document.querySelectorAll('.card');
+      cards.forEach(card => {
+        card.addEventListener('click', function () {
+          const cardName = card.getAttribute('data-name');
+
+          if (!characterConfirmed) {
+            cards.forEach(c => c.classList.remove('selected'));
+            selectedCards.clear();
+          }
+
+          if (card.classList.contains('selected')) {
+            card.classList.remove('selected');
+            selectedCards.delete(cardName);
+          } else {
+            card.classList.add('selected');
+            selectedCards.add(cardName);
+          }
+        });
+      });
+    }
+
+    window.onload = function () {
+      connect();
+      renderCharacters(allCharacters, 'characterSection');
+    };
+  </script>
+</head>
+
+<body>
+  <h1>Отгадай персонажа</h1>
+  <p id="selectMessage">Выберите персонажа:</p>
+  <div class="card-container" id="characterSection"></div>
+
+  <p id="chosenCharacter"></p>
+  <div class="button-container">
+    <button id="selectButton" onclick="selectCharacter()">Подтвердить выбор персонажа</button>
+ 
+    <p id="notification" style="font-size: 1.2em; color: green;"></p>
+  </div>
+  <div class="card-container" id="allCharacters"></div>
+
+</body>
+
+</html>
